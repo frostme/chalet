@@ -3,9 +3,11 @@ import * as React from "react";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
 import SettingsIcon from "@material-ui/icons/Settings";
+import ProcessesIcon from "@material-ui/icons/Computer";
 import Collapse from "@material-ui/core/Collapse";
 import Link from "../Link";
 import Settings from "../Settings";
+import Processes from "../Processes";
 
 import Store, { RUNNING } from "../../Store";
 import "./index.css";
@@ -16,6 +18,7 @@ export interface IProps {
 
 interface IState {
   settingsOpen: boolean;
+  processesOpen: boolean;
 }
 
 @observer
@@ -26,7 +29,7 @@ class Content extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = { settingsOpen: false };
+    this.state = { settingsOpen: false, processesOpen: false };
   }
 
   public getKeydownListener(store: Store) {
@@ -113,11 +116,30 @@ class Content extends React.Component<IProps, IState> {
     this.atBottom = this.isAtBottom();
   }
 
-  public toggleSettings() {
-    const isOpen = this.state.settingsOpen;
-    this.setState({
-      settingsOpen: !isOpen,
-    });
+  public toggleSettings(force?: boolean) {
+    if (force !== undefined) {
+      this.setState({
+        settingsOpen: force,
+      });
+    } else {
+      const isOpen = this.state.settingsOpen;
+      this.setState({
+        settingsOpen: !isOpen,
+      });
+    }
+  }
+
+  public toggleProcesses(force?: boolean) {
+    if (force !== undefined) {
+      this.setState({
+        processesOpen: force,
+      });
+    } else {
+      const isOpen = this.state.processesOpen;
+      this.setState({
+        processesOpen: !isOpen,
+      });
+    }
   }
 
   public render() {
@@ -141,6 +163,12 @@ class Content extends React.Component<IProps, IState> {
               <SettingsIcon />
             </button>
             <button
+              title="Edit Processes"
+              onClick={() => this.toggleProcesses()}
+            >
+              <ProcessesIcon />
+            </button>
+            <button
               title="Clear output (shift + alt + K)"
               onClick={() => store.clearOutput(store.selectedMonitorId)}
             >
@@ -156,7 +184,18 @@ class Content extends React.Component<IProps, IState> {
         </div>
         <Collapse in={this.state.settingsOpen} mountOnEnter unmountOnExit>
           {monitor && (
-            <Settings monitor={monitor} onClose={() => this.toggleSettings()} />
+            <Settings
+              monitor={monitor}
+              onClose={() => this.toggleSettings(false)}
+            />
+          )}
+        </Collapse>
+        <Collapse in={this.state.processesOpen} mountOnEnter unmountOnExit>
+          {monitor && (
+            <Processes
+              monitor={monitor}
+              onClose={() => this.toggleProcesses(false)}
+            />
           )}
         </Collapse>
         <pre>
