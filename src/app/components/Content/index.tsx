@@ -116,30 +116,32 @@ class Content extends React.Component<IProps, IState> {
     this.atBottom = this.isAtBottom();
   }
 
-  public toggleSettings(force?: boolean) {
-    if (force !== undefined) {
-      this.setState({
-        settingsOpen: force,
-      });
-    } else {
-      const isOpen = this.state.settingsOpen;
-      this.setState({
-        settingsOpen: !isOpen,
-      });
-    }
+  public closeSettings(){
+    this.setState({
+      settingsOpen: false
+    });
   }
 
-  public toggleProcesses(force?: boolean) {
-    if (force !== undefined) {
-      this.setState({
-        processesOpen: force,
-      });
-    } else {
-      const isOpen = this.state.processesOpen;
-      this.setState({
-        processesOpen: !isOpen,
-      });
-    }
+  public closeProcesses(){
+    this.setState({
+      processesOpen: false
+    });
+  }
+
+  public toggleSettings() {
+    const isOpen = this.state.settingsOpen;
+    this.setState({
+      settingsOpen: !isOpen,
+      processesOpen: false
+    });
+  }
+
+  public toggleProcesses() {
+    const isOpen = this.state.processesOpen;
+    this.setState({
+      processesOpen: !isOpen,
+      settingsOpen: false
+    });
   }
 
   public render() {
@@ -186,7 +188,7 @@ class Content extends React.Component<IProps, IState> {
           {monitor && (
             <Settings
               monitor={monitor}
-              onClose={() => this.toggleSettings(false)}
+              onClose={this.closeSettings}
             />
           )}
         </Collapse>
@@ -194,7 +196,7 @@ class Content extends React.Component<IProps, IState> {
           {monitor && (
             <Processes
               monitor={monitor}
-              onClose={() => this.toggleProcesses(false)}
+              onClose={this.closeProcesses}
             />
           )}
         </Collapse>
